@@ -2,24 +2,47 @@ version: "3.8"
 
 services:
 
-  elasticsearch:
+  elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
-    container_name: elasticsearch
+    container_name: elasticsearch1
+    hostname: elasticsearch1
     environment:
-      - discovery.type=single-node
+      - node.name=node-1
+      - cluster.name=my-cluster
+      - discovery.seed_hosts=elasticsearch2
+      - cluster.initial_master_nodes=node-1,node-2
       - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
+    container_name: elasticsearch2
+    hostname: elasticsearch2
+    environment:
+      - node.name=node-2
+      - cluster.name=my-cluster
+      - discovery.seed_hosts=elasticsearch1
+      - cluster.initial_master_nodes=node-1,node-2
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.18.0
     container_name: kibana
     depends_on:
-      - elasticsearch
+      - elasticsearch1
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch1:9200
     ports:
       - "5601:5601"
 
@@ -27,10 +50,13 @@ services:
     image: docker.elastic.co/logstash/logstash:8.18.0
     container_name: logstash
     depends_on:
-      - elasticsearch
+      - elasticsearch1
     ports:
       - "5044:5044"
     volumes:
       - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - ./sample.log:/usr/share/logstash/sample.log
-      
+
+volumes:
+  esdata1:
+  esdata2:
