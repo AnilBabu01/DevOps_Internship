@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: node-frontend
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: node-frontend
+
+  template:
+    metadata:
+      labels:
+        app: node-frontend
+
+    spec:
+      containers:
+        - name: node-frontend
+          image: abdocker409/cricket-frontend:04
+          ports:
+            - containerPort: 5173
