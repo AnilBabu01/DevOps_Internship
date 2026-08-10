@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: node-admin
+
+spec:
+  replicas: 5
+
+  selector:
+    matchLabels:
+      app: node-admin
+
+  template:
+    metadata:
+      labels:
+        app: node-admin
+
+    spec:
+      containers:
+        - name: node-admin
+          image: abdocker409/cricket-admin:01
+          ports:
+            - containerPort: 80

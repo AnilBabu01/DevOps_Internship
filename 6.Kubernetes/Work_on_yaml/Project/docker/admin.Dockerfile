@@ -1,4 +1,8 @@
-FROM node:22
+# =========================
+# Stage 1: Build React App
+# =========================
+
+FROM node:22 AS build
 
 WORKDIR /app
 
@@ -10,6 +14,22 @@ COPY Cricket-Admin/ .
 
 RUN npm run build
 
-EXPOSE 3000
 
-CMD ["npm","run","dev","--","--host","0.0.0.0","--port","3000"]
+# =========================
+# Stage 2: Nginx
+# =========================
+
+FROM nginx:alpine
+
+# Remove default nginx files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy Vite production build
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# SPA configuration
+COPY Cricket-Admin/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

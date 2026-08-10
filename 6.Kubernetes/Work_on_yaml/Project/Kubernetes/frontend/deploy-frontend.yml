@@ -5,7 +5,7 @@ metadata:
   name: node-frontend
 
 spec:
-  replicas: 1
+  replicas: 5
 
   selector:
     matchLabels:
@@ -19,6 +19,6 @@ spec:
     spec:
       containers:
         - name: node-frontend
-          image: abdocker409/cricket-frontend:04
+          image: abdocker409/cricket-frontend:05
           ports:
-            - containerPort: 5173
+            - containerPort: 80
