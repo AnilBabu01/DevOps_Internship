@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cricket-backend
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: cricket-backend
+
+  template:
+    metadata:
+      labels:
+        app: cricket-backend
+
+    spec:
+      containers:
+        - name: cricket-backend
+
+          image: abdocker409/cricket-api:02
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5000
+
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cricket-config
+                  key: DB_HOST
+
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cricket-config
+                  key: DB_PORT
+
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cricket-config
+                  key: DB_NAME
+
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: cricket-config
+                  key: DB_USER
+
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: cricket-config
+                  key: DB_PASSWORD

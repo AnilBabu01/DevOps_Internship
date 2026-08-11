@@ -11,6 +11,10 @@ RUN npm install
 
 COPY Cricket-frontend/ .
 
+# API URL for Vite
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
 

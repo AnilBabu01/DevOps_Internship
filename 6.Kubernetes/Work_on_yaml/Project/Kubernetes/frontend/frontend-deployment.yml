@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cricket-frontend
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: cricket-frontend
+
+  template:
+    metadata:
+      labels:
+        app: cricket-frontend
+
+    spec:
+      containers:
+        - name: cricket-frontend
+
+          image: abdocker409/cricket-frontend:09
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 80
+
+          env:
+            - name: VITE_API_URL
+              value: "http://127.0.0.1:64834"   
